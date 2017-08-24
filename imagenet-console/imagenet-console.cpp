@@ -60,7 +60,7 @@ int main( int argc, char** argv )
 	
 	if( img_class >= 0 )
 	{
-		printf("imagenet-console:  '%s' -> %2.5f%% class #%i (%s)\n", imgFilename, confidence * 100.0f, img_class, net->GetClassDesc(img_class));
+		printf("[result] imagenet-console:  '%s' -> %2.5f%% class #%i (%s)\n", imgFilename, confidence * 100.0f, img_class, net->GetClassDesc(img_class));
 	
 		if( argc > 2 )
 		{

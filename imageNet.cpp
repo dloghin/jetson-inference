@@ -156,6 +156,8 @@ imageNet* imageNet::Create( int argc, char** argv )
 			modelName = "googlenet";
 	}
 
+	printf("[debug] model name: %s\n", modelName);
+
 	//if( argc > 3 )
 	//	modelName = argv[3];	
 
