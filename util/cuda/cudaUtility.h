@@ -10,7 +10,7 @@
 #include <cuda.h>
 #include <stdio.h>
 #include <string.h>
-
+#include <stdint.h>
 
 /**
  * Execute a CUDA call and print out any errors
