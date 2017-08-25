@@ -1,7 +1,7 @@
 #/bin/bash
 
 if [ $# -lt 5 ]; then
-	echo "Usage: $0 <user> <host_ip> <working_path> <image> <model>"
+	echo "Usage: $0 <user> <host> <working_path> <image> <model>"
 	exit 1
 fi
 
@@ -15,6 +15,6 @@ scp $IMG $USER'@'$HOST':'$WDIR
 ssh $USER'@'$HOST << EOF
  cd $WDIR
  ./imagenet-console $IMG -model $MODEL &> tmp
- cat tmp | grep "result"
-EOF 
+EOF
+scp $USER'@'$HOST':'$WDIR/tmp . 
 	

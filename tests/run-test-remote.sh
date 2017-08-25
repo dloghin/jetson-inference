@@ -1,7 +1,7 @@
 #/bin/bash
 
 if [ $# -lt 2 ]; then
-	echo "Usage: $0 <user> <host_ip>"
+	echo "Usage: $0 <user> <host>"
 	exit 1
 fi
 
@@ -17,8 +17,8 @@ for MODEL in $MODEL_LIST; do
 	echo "Using $MODEL..."
 	echo ""
 	for IMG in $IMG_LIST; do
-		(time ./run-one-test-remote.sh $USER $HOST $WDIR $IMG $MODEL) &> tmp  
+		(time ./run-one-test-remote.sh $USER $HOST $WDIR $IMG $MODEL) &> tmpt 
 		cat tmp | grep "result"
-		cat tmp | grep "real"
+		cat tmpt | grep "real"
 	done
 done	
