@@ -213,7 +213,7 @@ LIBRARIES :=
 ifeq ($(TARGET_ARCH),$(filter $(TARGET_ARCH),armv7l aarch64))
 SMS ?= 53
 else
-SMS ?=
+SMS ?= 20
 endif
 
 ifeq ($(SMS),)
@@ -255,14 +255,11 @@ deviceQuery.o:deviceQuery.cpp
 
 deviceQuery: deviceQuery.o
 	$(EXEC) $(NVCC) $(ALL_LDFLAGS) $(GENCODE_FLAGS) -o $@ $+ $(LIBRARIES)
-	$(EXEC) mkdir -p ../../bin/$(TARGET_ARCH)/$(TARGET_OS)/$(BUILD_TYPE)
-	$(EXEC) cp $@ ../../bin/$(TARGET_ARCH)/$(TARGET_OS)/$(BUILD_TYPE)
 
 run: build
 	$(EXEC) ./deviceQuery
 
 clean:
 	rm -f deviceQuery deviceQuery.o
-	rm -rf ../../bin/$(TARGET_ARCH)/$(TARGET_OS)/$(BUILD_TYPE)/deviceQuery
 
 clobber: clean
