@@ -29,14 +29,16 @@ add_definitions(${QT_DEFINITIONS})
 # setup CUDA
 find_package(CUDA)
 
+execute_process(COMMAND bash getDevCap.sh
+			WORKING_DIRECTORY ../util/deviceQuery
+			RESULT_VARIABLE DEV_CAP)
+message("-- cuda device capability ${DEV_CAP}")
+
 set(
 	CUDA_NVCC_FLAGS
 	${CUDA_NVCC_FLAGS}; 
     -O3 
-	-gencode arch=compute_50,code=sm_50
-	-gencode arch=compute_52,code=sm_52
-	-gencode arch=compute_53,code=sm_53
-	-gencode arch=compute_62,code=sm_62
+	-gencode arch=compute_${DEV_CAP},code=sm_${DEV_CAP}
 )
 message("-- cuda nvcc flags ${CUDA_NVCC_FLAGS}")
 
