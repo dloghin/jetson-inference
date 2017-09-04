@@ -7,11 +7,13 @@ fi
 
 USER=$1
 HOST=$2
-ARCH="x86_64"
+ARCH=`ssh $USER@$HOST "uname -m"`
 WDIR="jetson-inference/build/$ARCH/bin"
 IMG_LIST=`ls | grep image`
-MODEL_LIST="googlenet alexnet"
+# MODEL_LIST="googlenet alexnet"
+MODEL_LIST="googlenet"
 
+t0=`date +%s`
 for MODEL in $MODEL_LIST; do
 	echo ""
 	echo "Using $MODEL..."
@@ -21,4 +23,6 @@ for MODEL in $MODEL_LIST; do
 		cat tmp | grep "result"
 		cat tmpt | grep "real"
 	done
-done	
+done
+t1=`date +%s`
+echo "Time: $(($t1-$t0))"
