@@ -1,31 +1,32 @@
 #/bin/bash
+#
+# Added by Dumi Loghin - 4 Sep 2017
+#
 
+ARCH=`uname -m`
 FEXT="done"
 FDONELOCAL="daemon.end"
 FDONEREMOTE="done.end"
 FRESULTS="results.txt"
+BDIR="jetson-inference/build/$ARCH/bin"
 WDIR="mtests"
-BDIR="../../build/$ARCH/bin"
 MODEL="googlenet"
 
+cd $BDIR
 mkdir -p $WDIR
-cd $WDIR
+rm -r $WDIR/*
+echo "" > $WDIR/$FRESULTS
 
-rm -f $FDONELOCAL
-echo "" > $FRESULTS
-
-while 1; do
-	FILE=`ls | grep jpg | head -n 1`
-	if [ -f $FILE ] && [ -f $FILE.$FEXT ]; then
-		$BDIR/imagenet-console $FILE -model $MODEL &>> $FRESULTS
-	fi
-	rm $FILE
-	rm $FILE.$FEXT
-	if [ -f $FDONE ]; then
-                break
+while true; do
+	FILE=`ls $WDIR | grep jpg | head -n 1`
+	if [ -f $WDIR/$FILE ] && [ -f $WDIR/$FILE.$FEXT ]; then
+		(time ./imagenet-console $WDIR/$FILE -model $MODEL) &>> $WDIR/$FRESULTS
+		rm $WDIR/$FILE
+		rm $WDIR/$FILE.$FEXT
+	elif [ -f $WDIR/$FDONEREMOTE ]; then
+        	break
         fi
-	sleep 0.1
+	#sleep 0.1
 done
-touch $FDONELOCAL 
+touch $WDIR/$FDONELOCAL 
 echo "Daemon exit..."
-exit
