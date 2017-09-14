@@ -14,8 +14,9 @@ WDIR="mtests"
 MODEL="googlenet"
 
 cd $BDIR
+rm -rf $WDIR
 mkdir -p $WDIR
-rm -r $WDIR/*
+touch $WDIR/$FRESULTS
 echo "" > $WDIR/$FRESULTS
 
 while true; do
