@@ -4,13 +4,17 @@
 #
 
 if [ $# -lt 2 ]; then
-	echo "Usage: $0 <user> <host>"
+	echo "Usage: $0 <user> <host> [<key>]"
 	exit 1
 fi
 
 USER=$1
 HOST=$2
-KEY="dumi_aws_1.pem"
+if [ $# -eq 3 ]; then
+	KEY=$3
+else
+	KEY=""
+fi
 if ! [ -z "$KEY" ]; then
 	SSHCMD="ssh -i "$KEY" $USER@$HOST"
 	SCPCMD="scp -i "$KEY""
@@ -30,7 +34,6 @@ FDONEREMOTE="daemon.end"
 FRESULTS="results.txt"
 
 echo "Remote arch: $ARCH"
-
 # set -x
 
 # rm old file
@@ -55,9 +58,9 @@ $SCPCMD $FDONELOCAL $USER@$HOST:$TDIR
 rm $FDONELOCAL
 # wait for results
 while true; do
-	$SCPCMD "$USER@$HOST:$TDIR/$FDONEREMOTE" .
+	$SCPCMD $USER@$HOST:$TDIR/$FDONEREMOTE .
 	if [ -f $FDONEREMOTE ]; then
-		$SCPCMD "$USER@$HOST:$TDIR/$FRESULTS" .
+		$SCPCMD $USER@$HOST:$TDIR/$FRESULTS .
 		break
 	fi
 	sleep 0.1
