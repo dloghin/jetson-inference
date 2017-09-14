@@ -8,10 +8,17 @@ if [ $# -lt 2 ]; then
 	exit 1
 fi
 
-
 USER=$1
 HOST=$2
-ARCH=`ssh $USER@$HOST "uname -m"`
+KEY="dumi_aws_1.pem"
+if ! [ -z "$KEY" ]; then
+	SSHCMD="ssh -i "$KEY" $USER@$HOST"
+	SCPCMD="scp -i "$KEY""
+else
+	SSHCMD="ssh $USER@$HOST"
+	SCPCMD="scp"
+fi
+ARCH=`$SSHCMD "uname -m"`
 BDIR="jetson-inference/build/$ARCH/bin"
 SDIR="jetson-inference/tests"
 TDIR="$BDIR/mtests"
@@ -22,31 +29,35 @@ FDONELOCAL="done.end"
 FDONEREMOTE="daemon.end"
 FRESULTS="results.txt"
 
+echo "Remote arch: $ARCH"
+
+# set -x
+
 # rm old file
 rm -f $FDONELOCAL
 rm -f $FDONEREMOTE
 rm -r $FRESULTS
 
 # start daemon
-ssh $USER@$HOST "$SDIR/daemon.sh" &
+$SSHCMD "$SDIR/daemon.sh" &
 
 t0=`date +%s`
 # copy images one by one
 for IMG in $IMG_LIST; do
-	scp $IMG $USER@$HOST:$TDIR
+	$SCPCMD $IMG $USER@$HOST:$TDIR
 	touch $IMG.$FEXT
-	scp $IMG.$FEXT $USER@$HOST:$TDIR
+	$SCPCMD $IMG.$FEXT $USER@$HOST:$TDIR
 	rm $IMG.$FEXT
 done
 # signal done
 touch $FDONELOCAL
-scp $FDONELOCAL $USER@$HOST:$TDIR
+$SCPCMD $FDONELOCAL $USER@$HOST:$TDIR
 rm $FDONELOCAL
 # wait for results
 while true; do
-	scp "$USER@$HOST:$TDIR/$FDONEREMOTE" .
+	$SCPCMD "$USER@$HOST:$TDIR/$FDONEREMOTE" .
 	if [ -f $FDONEREMOTE ]; then
-		scp "$USER@$HOST:$TDIR/$FRESULTS" .
+		$SCPCMD "$USER@$HOST:$TDIR/$FRESULTS" .
 		break
 	fi
 	sleep 0.1

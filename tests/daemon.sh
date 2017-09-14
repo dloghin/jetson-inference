@@ -1,8 +1,9 @@
 #/bin/bash
 #
+# Background script for remote multi-processing test.
+#
 # Added by Dumi Loghin - 4 Sep 2017
 #
-
 ARCH=`uname -m`
 FEXT="done"
 FDONELOCAL="daemon.end"
